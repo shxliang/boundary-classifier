@@ -16,7 +16,7 @@ class BaseModel:
         save_path = os.path.join(self.config.checkpoint_dir, "best_validation.ckpt")
         print("Saving model checkpoint  {}...".format(save_path))
         self.saver.save(sess, save_path, self.global_step_tensor)
-        print("Model saved")
+        print("Model saved\n")
 
     # load latest checkpoint from the experiment path defined in the config file
     def load(self, sess):
@@ -24,7 +24,7 @@ class BaseModel:
         if latest_checkpoint:
             print("Loading model checkpoint {} ...".format(latest_checkpoint))
             self.saver.restore(sess=sess, save_path=latest_checkpoint)
-            print("Model loaded")
+            print("Model loaded\n")
 
     # just initialize a tensorflow variable to use it as epoch counter
     def init_cur_epoch(self):

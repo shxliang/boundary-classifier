@@ -25,16 +25,16 @@ flags.DEFINE_string("rnn", "lstm", "RNN Cell 类型")
 flags.DEFINE_float("keep_prob", 0.5, "dropout保留比例")
 flags.DEFINE_float("learning_rate", 0.001, "学习率")
 flags.DEFINE_float("batch_size", 1, "每批训练大小")
-flags.DEFINE_integer("num_epochs", 10, "总迭代轮次")
+flags.DEFINE_integer("num_epochs", 20, "总迭代轮次")
 flags.DEFINE_integer("print_per_batch", 100, "每多少轮输出一次结果")
 flags.DEFINE_integer("save_per_batch", 10, "每多少轮存入tensorboard")
 flags.DEFINE_string("optimizer", "adam", "Optimizer for training")
 flags.DEFINE_integer("max_to_keep", 2, "max_to_keep")
 
 flags.DEFINE_string("tensorboard_dir", os.path.join("tensorboard", "double_lstm"), "TensorBoard Direction")
-flags.DEFINE_string("config_file", os.path.join("configs", "rnn_config_file"), "模型配置文件")
-flags.DEFINE_string("train_file", "data/sample_start_boundary.json", "训练集路径")
-flags.DEFINE_string("val_file", "data/sample_start_boundary.json", "验证集路径")
+flags.DEFINE_string("config_file", os.path.join("configs", "double_lstm_config_file"), "模型配置文件")
+flags.DEFINE_string("train_file", "data/train_start_boundary.json", "训练集路径")
+flags.DEFINE_string("val_file", "data/val_start_boundary.json", "验证集路径")
 flags.DEFINE_string("test_file", "data/sample_start_boundary.json", "测试集路径")
 flags.DEFINE_string("vocab_dir", "resources", "词汇表路径")
 flags.DEFINE_string("checkpoint_dir", os.path.join("checkpoints", "double_lstm"), "最佳验证结果保存路径")
@@ -60,11 +60,12 @@ def main_train():
     # load model if exists
     model.load(sess)
     # create your data generator
-    data = DataGenerator(config, word_to_id, label_to_id)
+    train_data = DataGenerator(config, word_to_id, label_to_id, config.train_file)
+    val_data = DataGenerator(config, word_to_id, label_to_id, config.val_file)
     # create tensorboard logger
     # logger = Logger(sess, config)
     # create trainer and pass all the previous components to it
-    trainer = DoubleLSTMTrainer(sess, model, data, config, id_to_label)
+    trainer = DoubleLSTMTrainer(sess, model, train_data, val_data, config, id_to_label)
 
     # here you train your model
     trainer.train()

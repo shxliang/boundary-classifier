@@ -5,14 +5,15 @@ from utils.utils import read_json_file, parse_one_hot
 
 
 class DataGenerator:
-    def __init__(self, config, word_to_id: dict, label_to_id: dict):
+    def __init__(self, config, word_to_id: dict, label_to_id: dict, data_path: str):
         self.config = config
         self.word_to_id = word_to_id
         self.label_to_id = label_to_id
+        self.data_path = data_path
         self.batch_data = self.sort_and_pad()
 
     def sort_and_pad(self):
-        left, right, label = read_json_file(self.config.train_file)
+        left, right, label = read_json_file(self.data_path)
         label = parse_one_hot(label, self.label_to_id)
         data = list(zip(left, right, label))
 
