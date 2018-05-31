@@ -1,3 +1,5 @@
+import os
+
 import tensorflow as tf
 
 
@@ -11,16 +13,17 @@ class BaseModel:
 
     # save function that saves the checkpoint in the path defined in the config file
     def save(self, sess):
-        print("Saving model...")
-        self.saver.save(sess, self.config.checkpoint_dir, self.global_step_tensor)
+        save_path = os.path.join(self.config.checkpoint_dir, "best_validation.ckpt")
+        print("Saving model checkpoint  {}...".format(save_path))
+        self.saver.save(sess, save_path, self.global_step_tensor)
         print("Model saved")
 
     # load latest checkpoint from the experiment path defined in the config file
     def load(self, sess):
         latest_checkpoint = tf.train.latest_checkpoint(self.config.checkpoint_dir)
         if latest_checkpoint:
-            print("Loading model checkpoint {} ...\n".format(latest_checkpoint))
-            self.saver.restore(sess, latest_checkpoint)
+            print("Loading model checkpoint {} ...".format(latest_checkpoint))
+            self.saver.restore(sess=sess, save_path=latest_checkpoint)
             print("Model loaded")
 
     # just initialize a tensorflow variable to use it as epoch counter

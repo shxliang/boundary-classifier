@@ -24,8 +24,8 @@ flags.DEFINE_string("rnn", "lstm", "RNN Cell 类型")
 # configurations for training
 flags.DEFINE_float("keep_prob", 0.5, "dropout保留比例")
 flags.DEFINE_float("learning_rate", 0.001, "学习率")
-flags.DEFINE_float("batch_size", 128, "每批训练大小")
-flags.DEFINE_integer("num_epochs", 100, "总迭代轮次")
+flags.DEFINE_float("batch_size", 1, "每批训练大小")
+flags.DEFINE_integer("num_epochs", 10, "总迭代轮次")
 flags.DEFINE_integer("print_per_batch", 100, "每多少轮输出一次结果")
 flags.DEFINE_integer("save_per_batch", 10, "每多少轮存入tensorboard")
 flags.DEFINE_string("optimizer", "adam", "Optimizer for training")
@@ -37,7 +37,7 @@ flags.DEFINE_string("train_file", "data/sample_start_boundary.json", "训练集�
 flags.DEFINE_string("val_file", "data/sample_start_boundary.json", "验证集路径")
 flags.DEFINE_string("test_file", "data/sample_start_boundary.json", "测试集路径")
 flags.DEFINE_string("vocab_dir", "resources", "词汇表路径")
-flags.DEFINE_string("checkpoint_dir", os.path.join("checkpoints/double_lstm", "best_validation"), "最佳验证结果保存路径")
+flags.DEFINE_string("checkpoint_dir", os.path.join("checkpoints", "double_lstm"), "最佳验证结果保存路径")
 
 FLAGS = tf.app.flags.FLAGS
 assert 0 <= FLAGS.keep_prob < 1, "dropout rate between 0 and 1"
@@ -69,6 +69,8 @@ def main_train():
     # here you train your model
     trainer.train()
 
+    sess.close()
+
 
 def evaluate_one():
     word_to_id, id_to_word, label_to_id, id_to_label = get_vocab(FLAGS.vocab_dir)
@@ -79,15 +81,16 @@ def evaluate_one():
 
     model = DoubleLSTMModel(config)
     model.load(sess)
-    sess.run(tf.global_variables_initializer())
 
     while True:
         try:
             left_line = input("input left context: ")
             if left_line == "exit":
+                sess.close()
                 exit(0)
             right_line = input("input right context: ")
             if right_line == "exit":
+                sess.close()
                 exit(0)
 
             left_input = [[word_to_id[x] if x in word_to_id else word_to_id["<UNK>"] for x in left_line]]
@@ -102,6 +105,7 @@ def evaluate_one():
             print(y_pred_cls[0], tf.nn.softmax(logits).eval(session=sess))
             print("所属类别: {}".format(id_to_label[y_pred_cls[0]]))
         except Exception as e:
+            sess.close()
             print(e)
 
 

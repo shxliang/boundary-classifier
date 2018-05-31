@@ -8,19 +8,31 @@ def main():
     with codecs.open("data/0-620_start_boundary.json", mode="r", encoding="utf-8") as f:
         lines = f.readlines()
 
-    result = []
+    train_set = []
+    test_set = []
+
     for line in lines:
         cur_json = json.loads(line)
         cur_label = cur_json["label"]
         if cur_label == "1":
-            result.append(line)
+            prob = np.random.random()
+            if prob <= 0.7:
+                train_set.append(line)
+            else:
+                test_set.append(line)
         else:
             prob = np.random.random()
             if prob <= 0.06:
-                result.append(line)
+                prob = np.random.random()
+                if prob <= 0.7:
+                    train_set.append(line)
+                else:
+                    test_set.append(line)
 
-    with codecs.open("data/sample_start_boundary.json", mode="w", encoding="utf-8") as f:
-        f.writelines(result)
+    with codecs.open("data/train_start_boundary.json", mode="w", encoding="utf-8") as f:
+        f.writelines(train_set)
+    with codecs.open("data/test_start_boundary.json", mode="w", encoding="utf-8") as f:
+        f.writelines(test_set)
 
 
 if __name__ == "__main__":
