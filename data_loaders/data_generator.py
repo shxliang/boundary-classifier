@@ -36,21 +36,28 @@ class DataGenerator:
         padded_right = []
         labels = []
 
-        left_max_length = max([len(sentence[0]) for sentence in data])
-        right_max_length = max([len(sentence[1]) for sentence in data])
+        left_max_length = max([len(sentence[0]) if len(sentence[0]) > 0 else 1 for sentence in data])
+        right_max_length = max([len(sentence[1]) if len(sentence[1]) > 0 else 1 for sentence in data])
 
         for line in data:
             left, right, label = line
-            left = [word_to_id[w] if w in word_to_id else word_to_id["<UNK>"] for w in [l for l in left]]
-            right = [word_to_id[w] if w in word_to_id else word_to_id["<UNK>"] for w in [r for r in right]]
+            if left == "":
+                left = [word_to_id[""]]
+            else:
+                left = [word_to_id[w] if w in word_to_id else word_to_id["<UNK>"] for w in [l for l in left]]
+            if right == "":
+                right = [word_to_id[""]]
+            else:
+                right = [word_to_id[w] if w in word_to_id else word_to_id["<UNK>"] for w in [r for r in right]]
 
+            # 计算需要padding的元素个数
             left_padding = [0] * (left_max_length - len(left))
             right_padding = [0] * (right_max_length - len(right))
 
-            padded_left.append(left + left_padding)
+            # left在前面padding，right在后面padding
+            padded_left.append(left_padding + left)
             padded_right.append(right + right_padding)
-            labels.append(label)
-
+            labels.append(label_to_id[label])
         return [padded_left, padded_right, labels]
 
     def iter_batch(self, shuffle=False):

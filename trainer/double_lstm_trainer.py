@@ -59,7 +59,7 @@ class DoubleLSTMTrainer(BaseTrain):
         batch_label = self.train_batch[2]
 
         feed_dict = {self.model.left_x: batch_left, self.model.right_x: batch_right, self.model.y: batch_label,
-                     self.model.keep_prob: self.config.keep_prob, self.model.is_training: True}
+                     self.model.keep_prob: self.config.keep_prob}
         _, loss, acc = self.sess.run([self.model.optim, self.model.loss, self.model.acc], feed_dict=feed_dict)
         return loss, acc
 
@@ -69,7 +69,7 @@ class DoubleLSTMTrainer(BaseTrain):
         batch_label = batch[2]
 
         feed_dict = {self.model.left_x: batch_left, self.model.right_x: batch_right, self.model.y: batch_label,
-                     self.model.keep_prob: 1.0, self.model.is_training: False}
+                     self.model.keep_prob: 1.0}
         pred_y = self.sess.run([self.model.y_pred_cls], feed_dict=feed_dict)
         return pred_y
 
@@ -81,7 +81,7 @@ class DoubleLSTMTrainer(BaseTrain):
             cur_label = cur_data[2]
 
             feed_dict = {self.model.left_x: cur_left, self.model.right_x: cur_right, self.model.y: cur_label,
-                         self.model.keep_prob: 1.0, self.model.is_training: False}
+                         self.model.keep_prob: 1.0}
             pred_y = self.sess.run([self.model.y_pred_cls], feed_dict=feed_dict)[0]
             pred_ys.extend(pred_y)
         return pred_ys

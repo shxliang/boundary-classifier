@@ -26,7 +26,6 @@ class DoubleLSTMModel(BaseModel):
         self.right_x = tf.placeholder(dtype=tf.int32, shape=[None, None], name="right_x")
         self.y = tf.placeholder(dtype=tf.float32, shape=[None, self.config.num_classes], name="y")
         self.keep_prob = tf.placeholder(tf.float32, name="keep_prob")
-        self.is_training = tf.placeholder(dtype=tf.bool)
 
         # 词向量embedding layer
         with tf.device('/cpu:0'):
@@ -34,7 +33,7 @@ class DoubleLSTMModel(BaseModel):
             left_embedding_inputs = tf.nn.embedding_lookup(left_embedding, self.left_x)
 
             right_embedding = tf.get_variable("right_embedding", [self.config.vocab_size, self.config.embedding_dim])
-            right_embedding_inputs = tf.nn.embedding_lookup(right_embedding, self.left_x)
+            right_embedding_inputs = tf.nn.embedding_lookup(right_embedding, self.right_x)
 
         with tf.name_scope("rnn"):
             with tf.variable_scope("left_rnn"):

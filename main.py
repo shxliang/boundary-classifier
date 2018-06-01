@@ -10,8 +10,8 @@ from trainer.double_lstm_trainer import DoubleLSTMTrainer
 from utils.config_util import get_or_create_config, get_config
 
 flags = tf.app.flags
-flags.DEFINE_boolean("clean", True, "Wither clean train folder")
-flags.DEFINE_boolean("train", True, "Wither train the model")
+flags.DEFINE_boolean("clean", False, "Wither clean train folder")
+flags.DEFINE_boolean("train", False, "Wither train the model")
 
 # configurations for the model
 flags.DEFINE_integer("embedding_dim", 64, "词向量维度")
@@ -94,20 +94,42 @@ def evaluate_one():
                 sess.close()
                 exit(0)
 
-            left_input = [[word_to_id[x] if x in word_to_id else word_to_id["<UNK>"] for x in left_line]]
-            right_input = [[word_to_id[x] if x in word_to_id else word_to_id["<UNK>"] for x in right_line]]
+            if left_line == "":
+                left_input = [[word_to_id[left_line]]]
+            else:
+                left_input = [[word_to_id[x] if x in word_to_id else word_to_id["<UNK>"] for x in left_line]]
+            if right_line == "":
+                right_input = [[word_to_id[right_line]]]
+            else:
+                right_input = [[word_to_id[x] if x in word_to_id else word_to_id["<UNK>"] for x in right_line]]
 
             feed_dict = {
                 model.left_x: left_input,
                 model.right_x: right_input,
                 model.keep_prob: 1.0
             }
+            print(left_input)
+            print(right_input)
             y_pred_cls, logits = sess.run([model.y_pred_cls, model.logits], feed_dict=feed_dict)
             print(y_pred_cls[0], tf.nn.softmax(logits).eval(session=sess))
             print("所属类别: {}".format(id_to_label[y_pred_cls[0]]))
         except Exception as e:
             sess.close()
             print(e)
+
+
+def save_for_java():
+    config = get_config(FLAGS.config_file)
+    sess = tf.Session()
+    model = DoubleLSTMModel(config)
+    model.load(sess)
+    builder = tf.saved_model.builder.SavedModelBuilder("tmp/double_lstm_model")
+    builder.add_meta_graph_and_variables(
+        sess,
+        [tf.saved_model.tag_constants.SERVING]
+    )
+    builder.save()
+    sess.close()
 
 
 if __name__ == '__main__':
@@ -117,3 +139,5 @@ if __name__ == '__main__':
         main_train()
     else:
         evaluate_one()
+
+    # save_for_java()
