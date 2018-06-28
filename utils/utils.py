@@ -54,3 +54,8 @@ def clean(params):
 
     if os.path.isdir("__pycache__"):
         shutil.rmtree("__pycache__")
+
+
+def mkdir():
+    if not os.path.isdir("configs"):
+        os.mkdir("configs")

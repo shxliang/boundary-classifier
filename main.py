@@ -1,7 +1,7 @@
 import os
 
 import tensorflow as tf
-from utils.utils import clean, create_dirs
+from utils.utils import clean, create_dirs, mkdir
 from utils.vocab_util import get_or_create_vocab, get_vocab
 
 from data_loaders.data_generator import DataGenerator
@@ -136,6 +136,7 @@ if __name__ == '__main__':
     if FLAGS.train:
         if FLAGS.clean:
             clean(FLAGS)
+        mkdir()
         main_train()
     else:
         evaluate_one()
