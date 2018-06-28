@@ -10,8 +10,8 @@ from trainer.double_lstm_trainer import DoubleLSTMTrainer
 from utils.config_util import get_or_create_config, get_config
 
 flags = tf.app.flags
-flags.DEFINE_boolean("clean", False, "Wither clean train folder")
-flags.DEFINE_boolean("train", False, "Wither train the model")
+flags.DEFINE_boolean("clean", False, "Whether clean train folder")
+flags.DEFINE_boolean("train", False, "Whether train the model")
 
 # configurations for the model
 flags.DEFINE_integer("embedding_dim", 64, "词向量维度")
