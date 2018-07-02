@@ -10,8 +10,8 @@ from trainer.double_lstm_trainer import DoubleLSTMTrainer
 from utils.config_util import get_or_create_config, get_config
 
 flags = tf.app.flags
-flags.DEFINE_boolean("clean", False, "Whether clean train folder")
-flags.DEFINE_boolean("train", False, "Whether train the model")
+flags.DEFINE_boolean("clean", True, "Whether clean train folder")
+flags.DEFINE_boolean("train", True, "Whether train the model")
 
 # configurations for the model
 flags.DEFINE_integer("embedding_dim", 64, "词向量维度")
@@ -136,9 +136,9 @@ if __name__ == '__main__':
     if FLAGS.train:
         if FLAGS.clean:
             clean(FLAGS)
-        mkdir()
+            mkdir()
         main_train()
     else:
         evaluate_one()
 
-        # save_for_java()
+    # save_for_java()

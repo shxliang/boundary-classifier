@@ -1,6 +1,8 @@
 import math
 import random
 
+import numpy as np
+
 from utils.utils import read_json_file, parse_one_hot
 
 
@@ -57,7 +59,7 @@ class DataGenerator:
             # left在前面padding，right在后面padding
             padded_left.append(left_padding + left)
             padded_right.append(right + right_padding)
-            labels.append(label_to_id[label])
+            labels.append(label)
         return [padded_left, padded_right, labels]
 
     def iter_batch(self, shuffle=False):
