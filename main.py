@@ -1,13 +1,13 @@
 import os
 
 import tensorflow as tf
-from utils.utils import clean, create_dirs, mkdir
-from utils.vocab_util import get_or_create_vocab, get_vocab
 
 from data_loaders.data_generator import DataGenerator
 from models.double_lstm_model import DoubleLSTMModel
 from trainer.double_lstm_trainer import DoubleLSTMTrainer
 from utils.config_util import get_or_create_config, get_config
+from utils.utils import clean, create_dirs, mkdir
+from utils.vocab_util import get_or_create_vocab, get_vocab
 
 flags = tf.app.flags
 flags.DEFINE_boolean("clean", True, "Whether clean train folder")
@@ -141,4 +141,4 @@ if __name__ == '__main__':
     else:
         evaluate_one()
 
-    # save_for_java()
+        # save_for_java()
